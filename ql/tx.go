@@ -21,14 +21,14 @@
 
 package ql
 
-type tx struct {
+type Tx struct {
 	*source
 }
 
-func (self *tx) Commit() error {
+func (self *Tx) Commit() error {
 	return self.source.tx.Commit()
 }
 
-func (self *tx) Rollback() error {
+func (self *Tx) Rollback() error {
 	return self.source.tx.Rollback()
 }

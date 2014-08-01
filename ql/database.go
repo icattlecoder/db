@@ -261,6 +261,7 @@ func (self *source) Ping() error {
 
 func (self *source) clone() (*source, error) {
 	src := &source{}
+	fmt.Printf("attempt to open a clone\n")
 	src.Setup(self.config)
 
 	if err := src.Open(); err != nil {
@@ -275,27 +276,23 @@ func (self *source) Clone() (db.Database, error) {
 }
 
 func (self *source) Transaction() (db.Tx, error) {
-	// We still have some issues with QL, transactions and blocking.
-	return nil, db.ErrUnsupported
-	/*
-		var err error
-		var clone *source
-		var sqlTx *sql.Tx
+	var err error
+	var clone *source
+	var sqlTx *sql.Tx
 
-		if clone, err = self.clone(); err != nil {
-			return nil, err
-		}
+	if clone, err = self.clone(); err != nil {
+		return nil, err
+	}
 
-		if sqlTx, err = clone.session.Begin(); err != nil {
-			return nil, err
-		}
+	if sqlTx, err = clone.session.Begin(); err != nil {
+		return nil, err
+	}
 
-		tx := &Tx{clone}
+	tx := &Tx{clone}
 
-		clone.tx = sqlTx
+	clone.tx = sqlTx
 
-		return tx, nil
-	*/
+	return tx, nil
 }
 
 // Stores database settings.

@@ -29,7 +29,8 @@ package ql
 // go test
 
 import (
-	//"database/sql"
+	"database/sql"
+	"fmt"
 	"os"
 
 	"menteslibres.net/gosexy/to"
@@ -39,6 +40,7 @@ import (
 	"time"
 
 	"upper.io/db"
+	"upper.io/db/util/sqlutil"
 )
 
 const (
@@ -724,41 +726,39 @@ func TestRawRelations(t *testing.T) {
 		Created:       time.Now(),
 	})
 
-	/*
-		// Exec'ing a raw query.
-		var artistPublication db.Collection
-		if artistPublication, err = sess.Collection(`artist`, `publication`); err != nil {
-			t.Fatal(err)
-		}
+	// Exec'ing a raw query.
+	var artistPublication db.Collection
+	if artistPublication, err = sess.Collection(`artist`, `publication`); err != nil {
+		t.Fatal(err)
+	}
 
-		res := artistPublication.Find(
-			db.Raw{`artist.id() == publisher.author_id`},
-		).Select(
-			"publisher.id() as id",
-			"publisher.title as publication_title",
-			"artist.name AS artist_name",
-		)
+	res := artistPublication.Find(
+		db.Raw{`artist.id == publication.author_id`},
+	).Select(
+		"publication.id AS id",
+		"publication.title As publication_title",
+		"artist.name AS artist_name",
+	)
 
-		type artistPublication_t struct {
-			Id               int64  `db:"id"`
-			PublicationTitle string `db:"publication_title"`
-			ArtistName       string `db:"artist_name"`
-		}
+	type artistPublication_t struct {
+		Id               int64  `db:"id"`
+		PublicationTitle string `db:"publication_title"`
+		ArtistName       string `db:"artist_name"`
+	}
 
-		all := []artistPublication_t{}
+	all := []artistPublication_t{}
 
-		if err = res.All(&all); err != nil {
-			t.Fatal(err)
-		}
+	if err = res.All(&all); err != nil {
+		t.Fatal(err)
+	}
+	fmt.Printf("all: %v\n", all)
 
-		if len(all) != 9 {
-			t.Fatalf("Expecting some rows.")
-		}
-	*/
+	if len(all) != 9 {
+		t.Fatalf("Expecting some rows.")
+	}
 
 }
 
-/*
 func TestRawQuery(t *testing.T) {
 	var sess db.Database
 	var rows *sql.Rows
@@ -805,11 +805,8 @@ func TestRawQuery(t *testing.T) {
 		t.Fatalf("Expecting some rows.")
 	}
 }
-*/
 
 // Attempts to test database transactions.
-// QL: Something is not working with QL's transactions.
-/*
 func TestTransactionsAndRollback(t *testing.T) {
 	var sess db.Database
 	var err error
@@ -982,7 +979,6 @@ func TestTransactionsAndRollback(t *testing.T) {
 	}
 
 }
-*/
 
 /*
 // TODO: Not supported by QL.
